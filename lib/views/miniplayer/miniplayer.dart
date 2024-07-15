@@ -4,35 +4,56 @@ import 'package:spotify_clone/const/const_clr.dart';
 import 'package:spotify_clone/controller/miniplayerstate.dart';
 import 'package:spotify_clone/views/musicplayer/musicplayer.dart';
 
-// ignore: must_be_immutable
 class MiniPlayer extends StatefulWidget {
-  
-   MiniPlayer({super.key});
+  const MiniPlayer({Key? key}) : super(key: key);
 
-
-    bool _isPressed = false;
   @override
   State<MiniPlayer> createState() => _MiniPlayerState();
 }
 
 class _MiniPlayerState extends State<MiniPlayer> {
   @override
+  void initState() {
+    super.initState();
+    
+    // Fetch track information when the widget is initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final miniPlayerModel = Provider.of<MiniPlayerModel>(context, listen: false);
+      fetchTrackInfo(miniPlayerModel);
+    });
+  }
+
+  void fetchTrackInfo(MiniPlayerModel miniPlayerModel) {
+    // Replace with your actual track information fetching logic
+    String trackName = 'Track Name';
+    List<String> artists = ['Artist 1', 'Artist 2'];
+    String albumImageUrl = 'https://i.scdn.co/image/ab67616d0000b273fa258529452f4ed34cc961b1';
+
+    print('Fetching track info: $trackName, $artists, $albumImageUrl');
+    miniPlayerModel.loadTrackInfo(trackName, artists, albumImageUrl);
+
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<MiniPlayerModel>(
       builder: (context, miniPlayerModel, _) => AnimatedContainer(
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         curve: Curves.easeInCirc,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(widget._isPressed ? 20 : 10),
-          color: widget._isPressed ? Colors.grey : Color.fromARGB(225, 231, 4, 4),
+          borderRadius: BorderRadius.circular(miniPlayerModel.isAdded ? 10 : 10),
+          
         ),
-
         child: InkWell(
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SongScreen(),
+                builder: (context) => SongScreen(
+                  trackName: miniPlayerModel.trackName,
+                  artists: miniPlayerModel.artists.join(', '),
+                  albumImageUrl: miniPlayerModel.albumImageUrl,
+                ),
               ),
             );
           },
@@ -48,29 +69,36 @@ class _MiniPlayerState extends State<MiniPlayer> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(5),
-                      child: const Image(
-                        height: 50,
-                        width: 50,
-                        fit: BoxFit.cover,
-                        image: AssetImage("assets/Image/Yuvan.jpg"),
-                      ),
+                      child:Image.network(
+                              miniPlayerModel.albumImageUrl,
+                              height: 50,
+                              width: 50,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                  size: 50,
+                                );
+                              },
+                            )
                     ),
                     const SizedBox(width: 8),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Oru Nalil",
-                            style: TextStyle(
+                            miniPlayerModel.trackName,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontFamily: "Avenir_med",
                               fontSize: 15,
                             ),
                           ),
                           Text(
-                            "Yuavn Shankar Raja",
-                            style: TextStyle(
+                            miniPlayerModel.artists.join(', '),
+                            style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 12,
                               fontFamily: "Avenir_reg",
@@ -83,7 +111,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
                       onPressed: () {
                         miniPlayerModel.toggleAdd();
                       },
-                      icon: miniPlayerModel.currentState == MiniPlayerState.adding
+                      icon: miniPlayerModel.isAdded
                           ? const Icon(
                               Icons.done,
                               color: Colors.green,
@@ -91,23 +119,23 @@ class _MiniPlayerState extends State<MiniPlayer> {
                             )
                           : const Icon(
                               Icons.add_circle_outline_outlined,
-                              color: txtclr,
+                              color: Colors.white,
                               size: 30,
                             ),
                     ),
                     IconButton(
-                      onPressed: () {
+                      onPressed: () { 
                         miniPlayerModel.togglePlayPause();
                       },
                       icon: miniPlayerModel.currentState == MiniPlayerState.playing
                           ? const Icon(
                               Icons.pause,
-                              color: txtclr,
+                              color: Colors.white,
                               size: 30,
                             )
                           : const Icon(
                               Icons.play_arrow,
-                              color: txtclr,
+                              color: Colors.white,
                               size: 30,
                             ),
                     ),
@@ -115,22 +143,24 @@ class _MiniPlayerState extends State<MiniPlayer> {
                 ),
               ),
               SizedBox(
-                height: 0, // Adjust the height of the slider
+                height: 10, // Adjust the height of the slider
                 width: 390, // Adjust the width of the slider
                 child: SliderTheme(
                   data: SliderTheme.of(context).copyWith(
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 0),
-                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 0),
-                    trackHeight: 2, // Adjust the track height of the slider
+                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
+                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 10),
+                    trackHeight: 3, // Adjust the track height of the slider
+                    activeTrackColor: Colors.white,
+                    inactiveTrackColor: Colors.grey,
+                    thumbColor: Colors.white,
+                    overlayColor: Colors.white.withOpacity(0.4),
                   ),
                   child: Slider(
                     min: 0,
-                    max: 100,
-                    value: 50,
-                    activeColor: Colors.white,
-                    inactiveColor: Colors.grey,
+                    max: miniPlayerModel.totalDuration.inSeconds.toDouble(),
+                    value: miniPlayerModel.currentPosition.inSeconds.toDouble(),
                     onChanged: (double value) {
-                      // Handle slider value change
+                      miniPlayerModel.updatePosition(Duration(seconds: value.toInt()));
                     },
                   ),
                 ),
