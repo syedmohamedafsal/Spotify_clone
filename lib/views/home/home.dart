@@ -240,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 children: const [
                   AllScreen(),
-                  MusicScreen(),
+                  AllScreen(),
                 ],
               )
             : _selectedIndex == 1
