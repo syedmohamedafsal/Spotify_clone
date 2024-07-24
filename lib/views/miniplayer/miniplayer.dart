@@ -26,10 +26,10 @@ class _MiniPlayerState extends State<MiniPlayer> {
 
   void fetchTrackInfo(MiniPlayerModel miniPlayerModel) {
     // Replace with your actual track information fetching logic
-    String trackName = 'Track Name';
+    String trackName = '';
     List<String> artists = ['Artist 1', 'Artist 2'];
     String albumImageUrl =
-        'https://i.scdn.co/image/ab67616d0000b273fa258529452f4ed34cc961b1';
+        'https://i.scdn.co/image/ab67616d0000b27367c738a703dc979f5c3c52ef';
 
     print('Fetching track info: $trackName, $artists, $albumImageUrl');
     miniPlayerModel.loadTrackInfo(trackName, artists, albumImageUrl, trackName);
