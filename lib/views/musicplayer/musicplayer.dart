@@ -8,7 +8,7 @@ class SongScreen extends StatefulWidget {
   final String artists;
   final String albumImageUrl;
   final String trackId;
-  final List<String> trackList; // Add track list parameter
+  final List<String> trackList;
 
   const SongScreen({
     Key? key,
@@ -16,7 +16,7 @@ class SongScreen extends StatefulWidget {
     required this.artists,
     required this.albumImageUrl,
     required this.trackId,
-    required this.trackList, String? coverArtUrl, // Initialize track list
+    required this.trackList,
   }) : super(key: key);
 
   @override
@@ -41,14 +41,13 @@ class _SongScreenState extends State<SongScreen> {
         '5gx3dMxQGJ1JDw5qHarRqp',
         '4PUniKS3Cywu23xjdtoji5',
       ]);
-      // Set track list in provider
+
       provider.playSong(widget.trackId);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    print(widget.trackId);
     return Scaffold(
       backgroundColor: appBarclr,
       appBar: AppBar(
@@ -97,8 +96,6 @@ class _SongScreenState extends State<SongScreen> {
       ),
       body: Consumer<SongScreenProvider>(
         builder: (context, provider, child) {
-          print('Artists List: ${provider.currentTrack?.artists}');
-
           return Column(
             children: [
               const SizedBox(height: 20),
@@ -141,7 +138,7 @@ class _SongScreenState extends State<SongScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            provider.currentTrack!.name ?? '',
+                            provider.currentTrack?.name ?? '',
                             style: const TextStyle(
                               color: txtclr,
                               fontFamily: "Avenir_bold",
@@ -149,18 +146,16 @@ class _SongScreenState extends State<SongScreen> {
                             ),
                           ),
                           Text(
-                            (provider.currentTrack?.artists != null &&
-                                    provider.currentTrack!.artists!.isNotEmpty)
-                                ? provider.currentTrack!.artists!
-                                    .map((artist) => artist.name ?? 'Unknown')
-                                    .join(', ')
-                                : 'Unknown Artist',
+                            provider.currentTrack?.artists
+                                    ?.map((artist) => artist.name ?? 'Unknown')
+                                    .join(', ') ??
+                                'Unknown Artist',
                             style: const TextStyle(
                               color: txtclr,
                               fontFamily: "Avenir_med",
                               fontSize: 12,
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),

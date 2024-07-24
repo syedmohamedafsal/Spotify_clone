@@ -14,6 +14,7 @@ class MiniPlayerModel extends ChangeNotifier {
   String _trackName = '';
   List<String> _artists = [];
   String _albumImageUrl = '';
+  String _trackId = ''; // Define trackId field
 
   MiniPlayerModel() {
     _audioPlayer.onDurationChanged.listen((Duration duration) {
@@ -31,7 +32,7 @@ class MiniPlayerModel extends ChangeNotifier {
   String get trackName => _trackName;
   List<String> get artists => _artists;
   String get albumImageUrl => _albumImageUrl;
-  String get trackId => trackId;
+  String get trackId => _trackId; // Use _trackId field
 
   MiniPlayerState get currentState => _currentState;
   Duration get currentPosition => _currentPosition;
@@ -39,10 +40,11 @@ class MiniPlayerModel extends ChangeNotifier {
   bool get isAdded => _isAdded;
 
   // Method to load track information
-  void loadTrackInfo(String trackName, List<String> artists, String albumImageUrl) {
+  void loadTrackInfo(String trackName, List<String> artists, String albumImageUrl, String trackId) {
     _trackName = trackName;
     _artists = artists;
     _albumImageUrl = albumImageUrl;
+    _trackId = trackId; // Set trackId
     notifyListeners();
   }
 

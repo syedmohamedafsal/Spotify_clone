@@ -32,7 +32,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
         'https://i.scdn.co/image/ab67616d0000b273fa258529452f4ed34cc961b1';
 
     print('Fetching track info: $trackName, $artists, $albumImageUrl');
-    miniPlayerModel.loadTrackInfo(trackName, artists, albumImageUrl);
+    miniPlayerModel.loadTrackInfo(trackName, artists, albumImageUrl, trackName);
   }
 
   @override
@@ -87,21 +87,21 @@ class _MiniPlayerState extends State<MiniPlayer> {
                           },
                         )),
                     const SizedBox(width: 8),
-                    Expanded(
+                    const Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            miniPlayerModel.trackName,
-                            style: const TextStyle(
+                            'Makina',
+                            style: TextStyle(
                               color: Colors.white,
                               fontFamily: "Avenir_med",
                               fontSize: 15,
                             ),
                           ),
                           Text(
-                            miniPlayerModel.artists.join(', '),
-                            style: const TextStyle(
+                            'Uzi , Mavi',
+                            style: TextStyle(
                               color: Colors.white70,
                               fontSize: 12,
                               fontFamily: "Avenir_reg",
