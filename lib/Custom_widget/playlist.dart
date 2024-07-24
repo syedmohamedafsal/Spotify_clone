@@ -24,17 +24,17 @@ class MusicPlayList extends StatelessWidget {
     PlaylistItem(
       imagePath: "assets/Image/Image11.jpg",
       trackName: "Today's Top Hits",
-      artistName: "Various Artists",
+      artistName: "Drake",
     ),
     PlaylistItem(
       imagePath: "assets/Image/Image12.jpg",
       trackName: "RapCaviar",
-      artistName: "Various Artists",
+      artistName: "Taylor Swift",
     ),
     PlaylistItem(
       imagePath: "assets/Image/Image13.jpg",
       trackName: "Rock Classics",
-      artistName: "Various Artists",
+      artistName: "Ed Sheeran",
     ),
     PlaylistItem(
       imagePath: "assets/Image/Image14.jpg",
@@ -44,32 +44,32 @@ class MusicPlayList extends StatelessWidget {
     PlaylistItem(
       imagePath: "assets/Image/Image15.jpg",
       trackName: "New Music Friday",
-      artistName: "Various Artists",
+      artistName: "Beyoncé",
     ),
     PlaylistItem(
       imagePath: "assets/Image/Image16.jpg",
       trackName: "Peaceful Piano",
-      artistName: "Various Artists",
+      artistName: "Billie Eilish",
     ),
     PlaylistItem(
       imagePath: "assets/Image/Image17.jpg",
       trackName: "Beast Mode",
-      artistName: "Various Artists",
+      artistName: "Post Malone",
     ),
     PlaylistItem(
       imagePath: "assets/Image/Image18.jpg",
       trackName: "Chill Hits",
-      artistName: "Various Artists",
+      artistName: "Ariana Grande",
     ),
     PlaylistItem(
       imagePath: "assets/Image/Image19.jpg",
       trackName: "Viva Latino",
-      artistName: "Various Artists",
+      artistName: "The Weeknd",
     ),
     PlaylistItem(
       imagePath: "assets/Image/Image20.jpg",
       trackName: "Dance Party",
-      artistName: "Various Artists",
+      artistName: "Kanye West",
     ),
   ];
 
