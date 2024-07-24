@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:spotify_clone/controller/user_provider.dart';
 import 'package:spotify_clone/const/const_clr.dart';
 import 'package:spotify_clone/views/playlist/songs.dart';
 
@@ -12,14 +14,43 @@ class LibraryScreen extends StatefulWidget {
 class _LibraryScreenState extends State<LibraryScreen> {
   bool _isListView = true; // Default to list view
 
+  @override
+  void initState() {
+    super.initState();
+    // Fetch user data with a valid userId
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      userProvider
+          .fetchUserData('nocopyrightsounds'); // Replace with valid userId
+    });
+  }
+
   void _toggleViewMode() {
     setState(() {
       _isListView = !_isListView;
     });
   }
 
+  bool _isValidImageUrl(String? url) {
+    if (url == null || url.isEmpty) {
+      return false;
+    }
+    final uri = Uri.tryParse(url);
+    return uri != null && uri.hasAbsolutePath && uri.host.isNotEmpty;
+  }
+
+  String _convertSpotifyUriToUrl(String uri) {
+    if (uri.startsWith("spotify:image:")) {
+      return "https://i.scdn.co/image/${uri.split(':').last}";
+    }
+    return uri;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final user = userProvider.user;
+
     return Scaffold(
       backgroundColor: appBarclr,
       body: Column(
@@ -131,11 +162,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
               ),
               const Spacer(),
               IconButton(
-                onPressed: () {
-                  setState(() {
-                    _isListView = !_isListView;
-                  });
-                },
+                onPressed: _toggleViewMode,
                 icon: Icon(
                   _isListView
                       ? Icons.format_list_bulleted_outlined
@@ -147,117 +174,151 @@ class _LibraryScreenState extends State<LibraryScreen> {
             ],
           ),
           Expanded(
-            child: _isListView
-                ? ListView.builder(
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return  Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const Musiclist(),));
-                          },
-                          child: const Row(
-                            children: [
-                              Image(
-                                height: 100,
-                                width: 100,
-                                fit: BoxFit.cover,
-                                image: AssetImage("assets/Image/Yuvan.jpg"),
-                              ),
-                              SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+            child: userProvider.isLoading
+                ? Center(child: CircularProgressIndicator())
+                : _isListView
+                    ? ListView.builder(
+                        itemCount: user.publicPlaylists?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final playlist = user.publicPlaylists?[index];
+                          final imageUrl =
+                              _convertSpotifyUriToUrl(playlist?.imageUrl ?? '');
+                          print("Image URL: $imageUrl"); // Log the image URL
+                          return Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const Musiclist(),
+                                  ),
+                                );
+                              },
+                              child: Row(
                                 children: [
-                                  Text(
-                                    "Liked Song",
-                                    style: TextStyle(
-                                      color: txtclr,
-                                      fontFamily: "Avenir_med",
-                                      fontSize: 16,
+                                  _isValidImageUrl(imageUrl)
+                                      ? Image.network(
+                                          imageUrl,
+                                          height: 100,
+                                          width: 100,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Image.asset(
+                                              'assets/Image/default.jpg', // Default image path
+                                              height: 100,
+                                              width: 100,
+                                              fit: BoxFit.cover,
+                                            );
+                                          },
+                                        )
+                                      : Image.asset(
+                                          'assets/Image/Yuvan.jpg', // Default image path
+                                          height: 100,
+                                          width: 100,
+                                          fit: BoxFit.cover,
+                                        ),
+                                  SizedBox(width: 10),
+                                  Flexible(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          playlist?.name ?? "Unknown Playlist",
+                                          style: TextStyle(
+                                            color: txtclr,
+                                            fontFamily: "Avenir_med",
+                                            fontSize: 14,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                        ),
+                                        Text(
+                                          playlist?.ownerName ??
+                                              "Unknown Owner",
+                                          style: TextStyle(
+                                            color: txtclr,
+                                            fontFamily: "Avenir_med",
+                                            fontSize: 14,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Text(
-                                    "Yuvan Shankar Raja",
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 50 / 60,
+                          mainAxisSpacing: 30.0,
+                          crossAxisSpacing: 10.0,
+                        ),
+                        itemCount: user?.publicPlaylists?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final playlist = user?.publicPlaylists?[index];
+                          final imageUrl =
+                              _convertSpotifyUriToUrl(playlist?.imageUrl ?? '');
+                          print("Image URL: $imageUrl"); // Log the image URL
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const Musiclist(),
+                                ),
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                _isValidImageUrl(imageUrl)
+                                    ? Image.network(
+                                        imageUrl,
+                                        height: 100,
+                                        width: 100,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Image.asset(
+                                            'assets/Image/Yuvan.jpg', // Default image path
+                                            height: 100,
+                                            width: 100,
+                                            fit: BoxFit.cover,
+                                          );
+                                        },
+                                      )
+                                    : Image.asset(
+                                        'assets/Image/Yuvan.jpg', // Default image path
+                                        height: 100,
+                                        width: 100,
+                                        fit: BoxFit.cover,
+                                      ),
+                                SizedBox(height: 10),
+                                Flexible(
+                                  child: Text(
+                                    playlist?.name ?? "Unknown Playlist",
                                     style: TextStyle(
                                       color: txtclr,
                                       fontFamily: "Avenir_med",
                                       fontSize: 14,
                                     ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                : GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 50/60,
-                      mainAxisSpacing: 30.0,
-                      crossAxisSpacing: 10.0,
-                    ),
-                    itemCount: 20,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const Musiclist(),));
+                                ),
+                              ],
+                            ),
+                          );
                         },
-                        child: Container(
-                          height: 200, // Adjust the height as needed
-                          width: 200, // Adjust the width as needed
-                          decoration: BoxDecoration(
-                            color: backgrndclr,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Image(
-                                  fit: BoxFit.cover,
-                                  height: 140,
-                                  width: double
-                                      .infinity, // Expand to fit the container
-                                  image: AssetImage("assets/Image/Yuvan.jpg"),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 1,top:5),
-                                child: Text(
-                                  "Yuvan Shankar Raja", // Example text
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                    color: txtclr,
-                                    fontFamily: "Avenir_med",
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 3),
-                                child: Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Text(
-                                    "Playlist", // Example text
-                                    style: TextStyle(
-                                      color: txtclr,
-                                      fontFamily: "Avenir_med",
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                      ),
           ),
         ],
       ),

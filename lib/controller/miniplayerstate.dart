@@ -9,7 +9,7 @@ class MiniPlayerModel extends ChangeNotifier {
   Duration _totalDuration = Duration.zero;
   bool _isAdded = false;
   final AudioPlayer _audioPlayer = AudioPlayer();
-
+  
   // Fields for track information
   String _trackName = '';
   List<String> _artists = [];
@@ -31,6 +31,7 @@ class MiniPlayerModel extends ChangeNotifier {
   String get trackName => _trackName;
   List<String> get artists => _artists;
   String get albumImageUrl => _albumImageUrl;
+  String get trackId => trackId;
 
   MiniPlayerState get currentState => _currentState;
   Duration get currentPosition => _currentPosition;
@@ -42,7 +43,6 @@ class MiniPlayerModel extends ChangeNotifier {
     _trackName = trackName;
     _artists = artists;
     _albumImageUrl = albumImageUrl;
-    _isAdded = true;
     notifyListeners();
   }
 
@@ -63,7 +63,6 @@ class MiniPlayerModel extends ChangeNotifier {
     _currentState = _isAdded ? MiniPlayerState.adding : MiniPlayerState.stopped;
     notifyListeners();
   }
-  
 
   void updatePosition(Duration newPosition) {
     _audioPlayer.seek(newPosition);

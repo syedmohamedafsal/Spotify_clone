@@ -1,10 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:spotify_clone/const/const_clr.dart';
 
+// Define a data model for the playlist items
+class PlaylistItem {
+  final String imagePath;
+  final String trackName;
+  final String artistName;
+
+  PlaylistItem({
+    required this.imagePath,
+    required this.trackName,
+    required this.artistName,
+  });
+}
+
 class MusicPlayList extends StatelessWidget {
-  const MusicPlayList({
+   MusicPlayList({
     super.key,
   });
+
+  // List of playlist items with example data
+  final List<PlaylistItem> playlistItems =  [
+    PlaylistItem(
+      imagePath: "assets/Image/Image11.jpg",
+      trackName: "Today's Top Hits",
+      artistName: "Various Artists",
+    ),
+    PlaylistItem(
+      imagePath: "assets/Image/Image12.jpg",
+      trackName: "RapCaviar",
+      artistName: "Various Artists",
+    ),
+    PlaylistItem(
+      imagePath: "assets/Image/Image13.jpg",
+      trackName: "Rock Classics",
+      artistName: "Various Artists",
+    ),
+    PlaylistItem(
+      imagePath: "assets/Image/Image14.jpg",
+      trackName: "Hot Country",
+      artistName: "Various Artists",
+    ),
+    PlaylistItem(
+      imagePath: "assets/Image/Image15.jpg",
+      trackName: "New Music Friday",
+      artistName: "Various Artists",
+    ),
+    PlaylistItem(
+      imagePath: "assets/Image/Image16.jpg",
+      trackName: "Peaceful Piano",
+      artistName: "Various Artists",
+    ),
+    PlaylistItem(
+      imagePath: "assets/Image/Image17.jpg",
+      trackName: "Beast Mode",
+      artistName: "Various Artists",
+    ),
+    PlaylistItem(
+      imagePath: "assets/Image/Image18.jpg",
+      trackName: "Chill Hits",
+      artistName: "Various Artists",
+    ),
+    PlaylistItem(
+      imagePath: "assets/Image/Image19.jpg",
+      trackName: "Viva Latino",
+      artistName: "Various Artists",
+    ),
+    PlaylistItem(
+      imagePath: "assets/Image/Image20.jpg",
+      trackName: "Dance Party",
+      artistName: "Various Artists",
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +80,14 @@ class MusicPlayList extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 10,
+        itemCount: playlistItems.length,
         itemBuilder: (context, index) {
-          return const Library();
+          final item = playlistItems[index];
+          return Library(
+            imagePath: item.imagePath,
+            trackName: item.trackName,
+            artistName: item.artistName,
+          );
         },
       ),
     );
@@ -23,42 +95,48 @@ class MusicPlayList extends StatelessWidget {
 }
 
 class Library extends StatelessWidget {
+  final String imagePath;
+  final String trackName;
+  final String artistName;
+
   const Library({
     super.key,
+    required this.imagePath,
+    required this.trackName,
+    required this.artistName,
   });
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(4.0),
           child: Image(
             height: 180,
             width: 160,
             fit: BoxFit.cover,
-            image: AssetImage("assets/Image/Yuvan.jpg"),
+            image: AssetImage(imagePath),
           ),
         ),
         Padding(
-          padding: EdgeInsets.all(5.0),
+          padding: const EdgeInsets.all(5.0),
           child: Text(
-            "Yuvan Drugs",
+            trackName,
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white, fontSize: 15, fontFamily: "Avenir_bold"),
           ),
         ),
-
         Padding(
-          padding: EdgeInsets.only(left: 8),
+          padding: const EdgeInsets.only(left: 8),
           child: Text(
-            "Yuvan Shankar Raja",
+            artistName,
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white, fontSize: 10, fontFamily: "Avenir_bold"),
           ),
         ),

@@ -10,4 +10,5 @@ class ApiConst{
   // static const String logInUrl = "$_endPoint/login/";
   // static const String signUpUrl = "$_endPoint/signup/";
   static const String albums = "$_endPoint/albums";
+  static const String track = "$_endPoint/tracks";
 }

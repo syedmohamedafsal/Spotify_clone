@@ -208,10 +208,13 @@ class _MusiclistState extends State<Musiclist> {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
+                                
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => SongScreen(
+                                      trackList: [],
+                                      trackId: track.id,  
                                       trackName: track.name,
                                       artists: album.artists[0].name,
                                       albumImageUrl: album.images[0].url,

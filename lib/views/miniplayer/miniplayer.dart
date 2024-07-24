@@ -15,10 +15,11 @@ class _MiniPlayerState extends State<MiniPlayer> {
   @override
   void initState() {
     super.initState();
-    
+
     // Fetch track information when the widget is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final miniPlayerModel = Provider.of<MiniPlayerModel>(context, listen: false);
+      final miniPlayerModel =
+          Provider.of<MiniPlayerModel>(context, listen: false);
       fetchTrackInfo(miniPlayerModel);
     });
   }
@@ -27,11 +28,11 @@ class _MiniPlayerState extends State<MiniPlayer> {
     // Replace with your actual track information fetching logic
     String trackName = 'Track Name';
     List<String> artists = ['Artist 1', 'Artist 2'];
-    String albumImageUrl = 'https://i.scdn.co/image/ab67616d0000b273fa258529452f4ed34cc961b1';
+    String albumImageUrl =
+        'https://i.scdn.co/image/ab67616d0000b273fa258529452f4ed34cc961b1';
 
     print('Fetching track info: $trackName, $artists, $albumImageUrl');
     miniPlayerModel.loadTrackInfo(trackName, artists, albumImageUrl);
-
   }
 
   @override
@@ -41,8 +42,8 @@ class _MiniPlayerState extends State<MiniPlayer> {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInCirc,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(miniPlayerModel.isAdded ? 10 : 10),
-          
+          borderRadius:
+              BorderRadius.circular(miniPlayerModel.isAdded ? 10 : 10),
         ),
         child: InkWell(
           onTap: () {
@@ -50,6 +51,8 @@ class _MiniPlayerState extends State<MiniPlayer> {
               context,
               MaterialPageRoute(
                 builder: (context) => SongScreen(
+                  trackList: [],
+                  trackId: miniPlayerModel.trackId,
                   trackName: miniPlayerModel.trackName,
                   artists: miniPlayerModel.artists.join(', '),
                   albumImageUrl: miniPlayerModel.albumImageUrl,
@@ -64,25 +67,25 @@ class _MiniPlayerState extends State<MiniPlayer> {
                   color: Color.fromARGB(159, 11, 65, 90),
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child:Image.network(
-                              miniPlayerModel.albumImageUrl,
-                              height: 50,
-                              width: 50,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(
-                                  Icons.error,
-                                  color: Colors.red,
-                                  size: 50,
-                                );
-                              },
-                            )
-                    ),
+                        borderRadius: BorderRadius.circular(5),
+                        child: Image.network(
+                          miniPlayerModel.albumImageUrl,
+                          height: 50,
+                          width: 50,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(
+                              Icons.error,
+                              color: Colors.red,
+                              size: 50,
+                            );
+                          },
+                        )),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Column(
@@ -124,10 +127,11 @@ class _MiniPlayerState extends State<MiniPlayer> {
                             ),
                     ),
                     IconButton(
-                      onPressed: () { 
+                      onPressed: () {
                         miniPlayerModel.togglePlayPause();
                       },
-                      icon: miniPlayerModel.currentState == MiniPlayerState.playing
+                      icon: miniPlayerModel.currentState ==
+                              MiniPlayerState.playing
                           ? const Icon(
                               Icons.pause,
                               color: Colors.white,
@@ -147,8 +151,10 @@ class _MiniPlayerState extends State<MiniPlayer> {
                 width: 390, // Adjust the width of the slider
                 child: SliderTheme(
                   data: SliderTheme.of(context).copyWith(
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
-                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 10),
+                    thumbShape:
+                        const RoundSliderThumbShape(enabledThumbRadius: 5),
+                    overlayShape:
+                        const RoundSliderOverlayShape(overlayRadius: 10),
                     trackHeight: 3, // Adjust the track height of the slider
                     activeTrackColor: Colors.white,
                     inactiveTrackColor: Colors.grey,
@@ -160,7 +166,8 @@ class _MiniPlayerState extends State<MiniPlayer> {
                     max: miniPlayerModel.totalDuration.inSeconds.toDouble(),
                     value: miniPlayerModel.currentPosition.inSeconds.toDouble(),
                     onChanged: (double value) {
-                      miniPlayerModel.updatePosition(Duration(seconds: value.toInt()));
+                      miniPlayerModel
+                          .updatePosition(Duration(seconds: value.toInt()));
                     },
                   ),
                 ),

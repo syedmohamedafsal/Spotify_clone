@@ -28,7 +28,7 @@ class PlayListtxt extends StatelessWidget {
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.27, // Adjust height as needed
-            child: const MusicPlayList(),
+            child:  MusicPlayList(),
           ),
           kheight,
         ],
