@@ -127,7 +127,7 @@ class _SongScreenState extends State<SongScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 62),
+                padding: const EdgeInsets.only(top: 150),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [

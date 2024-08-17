@@ -45,7 +45,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
               child: Icon(
                 widget.selectedindex == 1
                     ? Icons.saved_search_rounded
-                    : Icons.search_rounded,
+                    : Icons.search_rounded, 
               ),
             ),
             backgroundColor: backgrndclr),
